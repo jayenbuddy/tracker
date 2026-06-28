@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish It! Live Dashboard</title>
+    <style>
+        body {
+            background-color: #0f0f1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .dashboard {
+            background: linear-gradient(145deg, #18182c, #1f1f3a);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+            border: 1px solid #3d2b5c;
+            text-align: center;
+            width: 380px;
+        }
+        h1 { font-size: 24px; color: #a170ff; margin-bottom: 20px; }
+        .counter-box {
+            background-color: #0d0d1f;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid #8a2be2;
+            box-shadow: inset 0 0 15px rgba(138, 43, 226, 0.2);
+        }
+        .stone-count {
+            font-size: 48px;
+            font-weight: bold;
+            color: #df80ff;
+            text-shadow: 0 0 10px rgba(223, 128, 255, 0.6);
+        }
+        .info-text { font-size: 14px; color: #b0b0d0; margin: 8px 0; }
+        .status-online {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #00ffcc;
+            border-radius: 50%;
+            margin-right: 5px;
+            box-shadow: 0 0 8px #00ffcc;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>🎣 Fish It! Live Tracker</h1>
+        <div class="info-text"><span class="status-online"></span> Player: <strong id="username">Loading...</strong></div>
+        
+        <div class="counter-box">
+            <div class="info-text">Evolved Enchant Stone</div>
+            <div class="stone-count" id="stoneCount">0</div>
+            <div class="info-text">💎 Di Backpack</div>
+        </div>
+
+        <div class="info-text" style="font-size: 11px;">Metode: <span id="method">-</span></div>
+        <div class="info-text" style="font-size: 11px; color: #707090;">Sync terakhir: <span id="syncTime">-</span></div>
+    </div>
+
+    <script>
+        async function updateDashboard() {
+            try {
+                // Mengambil data langsung dari endpoint Vercel Serverless kamu
+                const response = await fetch('/api/update-stone');
+                const data = await response.json();
+                
+                if(data.username) {
+                    document.getElementById('username').innerText = data.username;
+                    document.getElementById('stoneCount').innerText = Number(data.totalStone).toLocaleString('id-ID');
+                    document.getElementById('method').innerText = data.method;
+                    document.getElementById('syncTime').innerText = data.timestamp;
+                }
+            } catch (err) {
+                console.log("Gagal mengambil data terbaru.");
+            }
+        }
+        // Ambil data setiap 3 detik di browser agar live!
+        setInterval(updateDashboard, 3000);
+        updateDashboard();
+    </script>
+</body>
+</html>
