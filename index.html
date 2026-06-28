@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jayen Tracker</title>
+    <title>JayenTracker</title>
     <style>
-        /* Gaya dasar bertema gelap futuristik */
         body {
             background-color: #0f0f1a;
             color: #ffffff;
@@ -25,38 +24,29 @@
             box-shadow: 0 0 35px rgba(161, 112, 255, 0.2);
             border: 1px solid #2d2d54;
             width: 100%;
-            max-width: 750px;
+            max-width: 850px;
         }
 
-        /* Container Judul, Efek Glitch & Logo Evolved Stone */
+        /* Container Judul */
         .title-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
             margin-bottom: 25px;
         }
 
-        .evo-logo {
-            width: 45px;
-            height: 45px;
-            filter: drop-shadow(0 0 8px rgba(223, 128, 255, 0.7));
-            object-fit: contain;
-        }
-
-        /* Efek Glitch Text Ungu Putih ala NontonYuk & Premium Panel */
+        /* Teks JayenTracker dengan Efek Glitch Sesuai Request */
         .glitch-title {
             font-size: 32px;
             font-weight: 900;
             color: #ffffff;
             letter-spacing: 1px;
-            text-transform: uppercase;
             position: relative;
             text-shadow: 0 0 10px rgba(161, 112, 255, 0.6);
         }
 
         .glitch-title::before, .glitch-title::after {
-            content: "Jayen Tracker";
+            content: "JayenTracker";
             position: absolute;
             top: 0;
             left: 0;
@@ -78,17 +68,22 @@
             left: -2px;
         }
 
+        /* Keyframes Glitch 100% Persis Request */
         @keyframes glitch-anim {
             0% { clip: rect(15px, 9999px, 66px, 0); }
-            100% { clip: rect(34px, 9999px, 55px, 0); }
+            10% { clip: rect(34px, 9999px, 55px, 0); }
+            15% { clip: rect(0px, 0px, 0px, 0); }
+            100% { clip: rect(0px, 0px, 0px, 0); }
         }
 
         @keyframes glitch-anim2 {
-            0% { clip: rect(70px, 9999px, 105px, 0); }
-            100% { clip: rect(5px, 9999px, 40px, 0); }
+            0% { clip: rect(65px, 9999px, 110px, 0); }
+            10% { clip: rect(5px, 9999px, 40px, 0); }
+            15% { clip: rect(0px, 0px, 0px, 0); }
+            100% { clip: rect(0px, 0px, 0px, 0); }
         }
 
-        /* Styling Tabel List Multi-Akun */
+        /* Styling Tabel */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -109,14 +104,22 @@
             background-color: #15152b;
             color: #a170ff;
             font-weight: 700;
-            text-transform: uppercase;
-            font-size: 13px;
+            font-size: 14px;
             letter-spacing: 0.5px;
         }
 
         tr:hover { background-color: #111124; }
 
-        /* Badge Angka Ungu Menyala */
+        /* Posisi Logo Evolved Enchant Stone Baru (Di Samping Teks TH) */
+        .evo-header-logo {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 6px;
+            filter: drop-shadow(0 0 4px rgba(223, 128, 255, 0.7));
+        }
+
+        /* Badge Angka Ungu */
         .stone-badge {
             background-color: #2a1640;
             color: #df80ff;
@@ -146,46 +149,38 @@
 <body>
     <div class="dashboard">
         <div class="title-container">
-            <img class="evo-logo" src="https://raw.githubusercontent.com/jayenco/tracker/main/EVO.png" alt="Evolved Stone">
-            <div class="glitch-title">Jayen Tracker</div>
+            <div class="glitch-title">JayenTracker</div>
         </div>
         
         <table>
             <thead>
                 <tr>
                     <th>👤 Player Name</th>
-                    <th>💎 Evolved Enchant Stone</th>
+                    <th>
+                        <img class="evo-header-logo" src="https://raw.githubusercontent.com/jayenco/tracker/main/EVO.png" alt="Evolved Stone">
+                        Evolved Enchant Stone
+                    </th>
                     <th>🕒 Last Modified</th>
+                    <th>🔄 Last Sync</th>
                 </tr>
             </thead>
             <tbody id="accountTableBody">
                 <tr>
-                    <td colspan="3" style="text-align: center; color: #5c5c7a; padding: 25px;">Menunggu sinkronisasi dari executor Roblox...</td>
+                    <td colspan="4" style="text-align: center; color: #5c5c7a; padding: 25px;">Menunggu sinkronisasi dari executor Roblox...</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <script>
-        // Objek internal untuk melacak riwayat waktu perubahan data
-        let localTimestamps = {};
+        // State internal browser untuk mencatat riwayat perubahan data secara independen
+        let trackerState = {};
 
-        // Fungsi mengubah format selisih detik menjadi teks "ago" yang dinamis
-        function timeAgo(pastTimeString) {
-            if (!pastTimeString || pastTimeString === "-") return "-";
+        function formatElapsedTime(pastTime) {
+            if (!pastTime) return "-";
+            const diffSeconds = Math.floor((new Date() - pastTime) / 1000);
             
-            const now = new Date();
-            const [hours, minutes, seconds] = pastTimeString.split(':').map(Number);
-            
-            const past = new Date();
-            past.setHours(hours, minutes, seconds);
-
-            // Menghitung selisih waktu dalam detik
-            let diffSeconds = Math.floor((now - past) / 1000);
-            
-            // Mengatasi anomali pergantian waktu / timezone serverless
-            if (diffSeconds < 0) diffSeconds = 0; 
-
+            if (diffSeconds < 0) return "Just now";
             if (diffSeconds < 5) return "Just now";
             if (diffSeconds < 60) return `${diffSeconds} sec ago`;
             
@@ -205,17 +200,35 @@
                 
                 for (const userId in database) {
                     const account = database[userId];
-                    
-                    // Logika pendeteksi perubahan: Jika data baru punya timestamp berbeda, simpan sebagai update terbaru
-                    if (!localTimestamps[userId] || localTimestamps[userId].rawTime !== account.timestamp) {
-                        localTimestamps[userId] = {
-                            rawTime: account.timestamp,
-                            calculatedAgo: "Just now"
+                    const currentStoneCount = Number(account.totalStone);
+                    const currentRawTimestamp = account.timestamp;
+                    const now = new Date();
+
+                    // Jika akun baru pertama kali terdeteksi di browser
+                    if (!trackerState[userId]) {
+                        trackerState[userId] = {
+                            lastStoneValue: currentStoneCount,
+                            lastRawSyncTime: currentRawTimestamp,
+                            modifiedRealDate: now,
+                            syncRealDate: now
                         };
                     } else {
-                        // Jika tidak ada data baru yang masuk, perbarui hitungan detiknya secara live
-                        localTimestamps[userId].calculatedAgo = timeAgo(localTimestamps[userId].rawTime);
+                        // 1. LOGIKA LAST MODIFIED: Hanya update waktu jika angka batu bertambah / berkurang
+                        if (trackerState[userId].lastStoneValue !== currentStoneCount) {
+                            trackerState[userId].lastStoneValue = currentStoneCount;
+                            trackerState[userId].modifiedRealDate = now;
+                        }
+                        
+                        // 2. LOGIKA LAST SYNC: Update waktu setiap kali data baru dari executor masuk (timestamp berubah)
+                        if (trackerState[userId].lastRawSyncTime !== currentRawTimestamp) {
+                            trackerState[userId].lastRawSyncTime = currentRawTimestamp;
+                            trackerState[userId].syncRealDate = now;
+                        }
                     }
+
+                    // Hitung teks elapsennya dinamis (e.g., "5 sec ago")
+                    const displayModified = formatElapsedTime(trackerState[userId].modifiedRealDate);
+                    const displaySync = formatElapsedTime(trackerState[userId].syncRealDate);
 
                     const row = `
                         <tr>
@@ -224,11 +237,10 @@
                                 <strong>${account.username}</strong>
                             </td>
                             <td>
-                                <span class="stone-badge">${Number(account.totalStone).toLocaleString('id-ID')}</span>
+                                <span class="stone-badge">${currentStoneCount.toLocaleString('id-ID')}</span>
                             </td>
-                            <td class="timestamp-text" id="time-${userId}">
-                                ${localTimestamps[userId].calculatedAgo}
-                            </td>
+                            <td class="timestamp-text">${displayModified}</td>
+                            <td class="timestamp-text">${displaySync}</td>
                         </tr>
                     `;
                     tbody.innerHTML += row;
@@ -238,7 +250,7 @@
             }
         }
 
-        // Interval sinkronisasi dipercepat menjadi 1 detik agar hitungan detik "ago" berjalan sangat mulus
+        // Jalankan tracking real-time per 1 detik agar counter waktu berjalan mulus
         setInterval(fetchMultiData, 1000);
         fetchMultiData();
     </script>
