@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fish It! Live Dashboard</title>
+    <title>Fish It! Multi-Account Dashboard</title>
     <style>
         body {
             background-color: #0f0f1a;
@@ -12,8 +12,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
         .dashboard {
             background: linear-gradient(145deg, #18182c, #1f1f3a);
@@ -21,71 +22,104 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
             border: 1px solid #3d2b5c;
-            text-align: center;
-            width: 380px;
+            width: 100%;
+            max-width: 700px;
         }
-        h1 { font-size: 24px; color: #a170ff; margin-bottom: 20px; }
-        .counter-box {
+        h1 { font-size: 26px; color: #a170ff; margin-bottom: 20px; text-align: center; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
             background-color: #0d0d1f;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border: 1px solid #8a2be2;
-            box-shadow: inset 0 0 15px rgba(138, 43, 226, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #3d2b5c;
         }
-        .stone-count {
-            font-size: 48px;
-            font-weight: bold;
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #1f1f3a;
+        }
+        th {
+            background-color: #1a1a36;
+            color: #a170ff;
+            font-weight: 600;
+        }
+        tr:hover { background-color: #161630; }
+        .stone-badge {
+            background-color: #3d1b5c;
             color: #df80ff;
-            text-shadow: 0 0 10px rgba(223, 128, 255, 0.6);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: 1px solid #8a2be2;
+            text-shadow: 0 0 5px rgba(223, 128, 255, 0.4);
         }
-        .info-text { font-size: 14px; color: #b0b0d0; margin: 8px 0; }
-        .status-online {
+        .status-dot {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: #00ffcc;
             border-radius: 50%;
-            margin-right: 5px;
+            margin-right: 6px;
             box-shadow: 0 0 8px #00ffcc;
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <h1>🎣 Fish It! Live Tracker</h1>
-        <div class="info-text"><span class="status-online"></span> Player: <strong id="username">Loading...</strong></div>
+        <h1>🎣 Fish It! Multi-Account Live Tracker</h1>
         
-        <div class="counter-box">
-            <div class="info-text">Evolved Enchant Stone</div>
-            <div class="stone-count" id="stoneCount">0</div>
-            <div class="info-text">💎 Di Backpack</div>
-        </div>
-
-        <div class="info-text" style="font-size: 11px;">Metode: <span id="method">-</span></div>
-        <div class="info-text" style="font-size: 11px; color: #707090;">Sync terakhir: <span id="syncTime">-</span></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>👤 Player Name</th>
+                    <th>📦 Evolved Stone</th>
+                    <th>📍 Method</th>
+                    <th>🕒 Last Sync</th>
+                </tr>
+            </thead>
+            <tbody id="accountTableBody">
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #707090;">Menunggu data dari executor Roblox...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
-        async function updateDashboard() {
+        async function fetchMultiData() {
             try {
-                // Mengambil data langsung dari endpoint Vercel Serverless kamu
                 const response = await fetch('/api/update-stone');
-                const data = await response.json();
+                const database = await response.json();
                 
-                if(data.username) {
-                    document.getElementById('username').innerText = data.username;
-                    document.getElementById('stoneCount').innerText = Number(data.totalStone).toLocaleString('id-ID');
-                    document.getElementById('method').innerText = data.method;
-                    document.getElementById('syncTime').innerText = data.timestamp;
+                const tbody = document.getElementById('accountTableBody');
+                
+                // Jika database masih kosong
+                if (Object.keys(database).length === 0) return;
+                
+                tbody.innerHTML = ""; // Bersihkan baris lama
+                
+                // Loop untuk merender setiap akun yang mengirimkan data
+                for (const userId in database) {
+                    const account = database[userId];
+                    const row = `
+                        <tr>
+                            <td><span class="status-dot"></span><strong>${account.username}</strong> <span style="font-size:10px; color:#5c5c7a;">(${userId})</span></td>
+                            <td><span class="stone-badge">${Number(account.totalStone).toLocaleString('id-ID')}</span></td>
+                            <td style="font-size: 12px; color: #b0b0d0;">\`${account.method}\`</td>
+                            <td style="font-size: 12px; color: #707090;">${account.timestamp}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
                 }
             } catch (err) {
-                console.log("Gagal mengambil data terbaru.");
+                console.log("Error fetching server data.");
             }
         }
-        // Ambil data setiap 3 detik di browser agar live!
-        setInterval(updateDashboard, 3000);
-        updateDashboard();
+        
+        setInterval(fetchMultiData, 3000); // Live sync tiap 3 detik tanpa kedip
+        fetchMultiData();
     </script>
 </body>
 </html>
