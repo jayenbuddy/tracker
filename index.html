@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fish It! Multi-Account Dashboard</title>
+    <title>Jayen Tracker</title>
     <style>
+        /* Gaya dasar bertema gelap futuristik */
         body {
             background-color: #0f0f1a;
             color: #ffffff;
@@ -16,109 +17,229 @@
             margin: 0;
             padding: 20px;
         }
+
         .dashboard {
-            background: linear-gradient(145deg, #18182c, #1f1f3a);
+            background: linear-gradient(145deg, #121222, #1a1a32);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
-            border: 1px solid #3d2b5c;
+            box-shadow: 0 0 35px rgba(161, 112, 255, 0.2);
+            border: 1px solid #2d2d54;
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
         }
-        h1 { font-size: 26px; color: #a170ff; margin-bottom: 20px; text-align: center; }
+
+        /* Container Judul, Efek Glitch & Logo Evolved Stone */
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .evo-logo {
+            width: 45px;
+            height: 45px;
+            filter: drop-shadow(0 0 8px rgba(223, 128, 255, 0.7));
+            object-fit: contain;
+        }
+
+        /* Efek Glitch Text Ungu Putih ala NontonYuk & Premium Panel */
+        .glitch-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 0 0 10px rgba(161, 112, 255, 0.6);
+        }
+
+        .glitch-title::before, .glitch-title::after {
+            content: "Jayen Tracker";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-title::before {
+            color: #df80ff;
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+            clip: rect(44px, 450px, 56px, 0);
+            left: 2px;
+        }
+
+        .glitch-title::after {
+            color: #00ffcc;
+            animation: glitch-anim2 2.5s infinite linear alternate-reverse;
+            clip: rect(12px, 450px, 32px, 0);
+            left: -2px;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(15px, 9999px, 66px, 0); }
+            100% { clip: rect(34px, 9999px, 55px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(70px, 9999px, 105px, 0); }
+            100% { clip: rect(5px, 9999px, 40px, 0); }
+        }
+
+        /* Styling Tabel List Multi-Akun */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            background-color: #0d0d1f;
-            border-radius: 10px;
+            background-color: #0b0b14;
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #3d2b5c;
+            border: 1px solid #232342;
         }
+
         th, td {
-            padding: 12px 15px;
+            padding: 14px 18px;
             text-align: left;
-            border-bottom: 1px solid #1f1f3a;
+            border-bottom: 1px solid #1a1a30;
         }
+
         th {
-            background-color: #1a1a36;
+            background-color: #15152b;
             color: #a170ff;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
         }
-        tr:hover { background-color: #161630; }
+
+        tr:hover { background-color: #111124; }
+
+        /* Badge Angka Ungu Menyala */
         .stone-badge {
-            background-color: #3d1b5c;
+            background-color: #2a1640;
             color: #df80ff;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 8px;
             font-weight: bold;
-            border: 1px solid #8a2be2;
-            text-shadow: 0 0 5px rgba(223, 128, 255, 0.4);
+            border: 1px solid #a170ff;
+            box-shadow: 0 0 10px rgba(161, 112, 255, 0.3);
         }
+
         .status-dot {
             display: inline-block;
             width: 8px;
             height: 8px;
             background-color: #00ffcc;
             border-radius: 50%;
-            margin-right: 6px;
+            margin-right: 8px;
             box-shadow: 0 0 8px #00ffcc;
+        }
+
+        .timestamp-text {
+            font-size: 13px;
+            color: #8c8ca3;
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <h1>🎣 Fish It! Multi-Account Live Tracker</h1>
+        <div class="title-container">
+            <img class="evo-logo" src="https://raw.githubusercontent.com/jayenco/tracker/main/EVO.png" alt="Evolved Stone">
+            <div class="glitch-title">Jayen Tracker</div>
+        </div>
         
         <table>
             <thead>
                 <tr>
                     <th>👤 Player Name</th>
-                    <th>📦 Evolved Stone</th>
-                    <th>📍 Method</th>
-                    <th>🕒 Last Sync</th>
+                    <th>💎 Evolved Enchant Stone</th>
+                    <th>🕒 Last Modified</th>
                 </tr>
             </thead>
             <tbody id="accountTableBody">
                 <tr>
-                    <td colspan="4" style="text-align: center; color: #707090;">Menunggu data dari executor Roblox...</td>
+                    <td colspan="3" style="text-align: center; color: #5c5c7a; padding: 25px;">Menunggu sinkronisasi dari executor Roblox...</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <script>
+        // Objek internal untuk melacak riwayat waktu perubahan data
+        let localTimestamps = {};
+
+        // Fungsi mengubah format selisih detik menjadi teks "ago" yang dinamis
+        function timeAgo(pastTimeString) {
+            if (!pastTimeString || pastTimeString === "-") return "-";
+            
+            const now = new Date();
+            const [hours, minutes, seconds] = pastTimeString.split(':').map(Number);
+            
+            const past = new Date();
+            past.setHours(hours, minutes, seconds);
+
+            // Menghitung selisih waktu dalam detik
+            let diffSeconds = Math.floor((now - past) / 1000);
+            
+            // Mengatasi anomali pergantian waktu / timezone serverless
+            if (diffSeconds < 0) diffSeconds = 0; 
+
+            if (diffSeconds < 5) return "Just now";
+            if (diffSeconds < 60) return `${diffSeconds} sec ago`;
+            
+            const diffMinutes = Math.floor(diffSeconds / 60);
+            return `${diffMinutes} min ago`;
+        }
+
         async function fetchMultiData() {
             try {
                 const response = await fetch('/api/update-stone');
                 const database = await response.json();
                 
                 const tbody = document.getElementById('accountTableBody');
-                
-                // Jika database masih kosong
                 if (Object.keys(database).length === 0) return;
                 
-                tbody.innerHTML = ""; // Bersihkan baris lama
+                tbody.innerHTML = "";
                 
-                // Loop untuk merender setiap akun yang mengirimkan data
                 for (const userId in database) {
                     const account = database[userId];
+                    
+                    // Logika pendeteksi perubahan: Jika data baru punya timestamp berbeda, simpan sebagai update terbaru
+                    if (!localTimestamps[userId] || localTimestamps[userId].rawTime !== account.timestamp) {
+                        localTimestamps[userId] = {
+                            rawTime: account.timestamp,
+                            calculatedAgo: "Just now"
+                        };
+                    } else {
+                        // Jika tidak ada data baru yang masuk, perbarui hitungan detiknya secara live
+                        localTimestamps[userId].calculatedAgo = timeAgo(localTimestamps[userId].rawTime);
+                    }
+
                     const row = `
                         <tr>
-                            <td><span class="status-dot"></span><strong>${account.username}</strong> <span style="font-size:10px; color:#5c5c7a;">(${userId})</span></td>
-                            <td><span class="stone-badge">${Number(account.totalStone).toLocaleString('id-ID')}</span></td>
-                            <td style="font-size: 12px; color: #b0b0d0;">\`${account.method}\`</td>
-                            <td style="font-size: 12px; color: #707090;">${account.timestamp}</td>
+                            <td>
+                                <span class="status-dot"></span>
+                                <strong>${account.username}</strong>
+                            </td>
+                            <td>
+                                <span class="stone-badge">${Number(account.totalStone).toLocaleString('id-ID')}</span>
+                            </td>
+                            <td class="timestamp-text" id="time-${userId}">
+                                ${localTimestamps[userId].calculatedAgo}
+                            </td>
                         </tr>
                     `;
                     tbody.innerHTML += row;
                 }
             } catch (err) {
-                console.log("Error fetching server data.");
+                console.log("Gagal memuat data dari API Vercel.");
             }
         }
-        
-        setInterval(fetchMultiData, 3000); // Live sync tiap 3 detik tanpa kedip
+
+        // Interval sinkronisasi dipercepat menjadi 1 detik agar hitungan detik "ago" berjalan sangat mulus
+        setInterval(fetchMultiData, 1000);
         fetchMultiData();
     </script>
 </body>
