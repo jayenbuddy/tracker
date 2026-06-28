@@ -33,7 +33,7 @@
             position: relative;
         }
 
-        /* --- BACKGROUND AURORA --- */
+        /* --- BACKGROUND AURORA (WARISAN NONTONYUK) --- */
         .bg-wrapper {
             position: fixed;
             top: 0;
@@ -76,7 +76,7 @@
             margin-bottom: 40px;
         }
 
-        /* --- GLITCH TITLE --- */
+        /* --- GLITCH TITLE 100% PERSIS NONTONYUK --- */
         h1 {
             font-family: 'Outfit', sans-serif;
             font-size: 38px;
@@ -127,7 +127,7 @@
             100% { clip: rect(0px, 0px, 0px, 0); }
         }
 
-        /* --- SCREEN MANAGEMENT --- */
+        /* --- SCREEN VIEWS --- */
         .view-screen {
             display: none;
         }
@@ -135,7 +135,7 @@
             display: block;
         }
 
-        /* --- CARD & FORM LOGIN --- */
+        /* --- LOGIN CARD --- */
         .login-card {
             max-width: 380px;
             margin: 0 auto;
@@ -203,9 +203,7 @@
             transition: background 0.2s ease;
         }
 
-        .login-btn:hover {
-            background: #2563eb;
-        }
+        .login-btn:hover { background: #2563eb; }
 
         .error-msg {
             color: #ff4a4a;
@@ -214,7 +212,7 @@
             display: none;
         }
 
-        /* --- STYLING TABLE --- */
+        /* --- DASHBOARD TABLE --- */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -287,7 +285,8 @@
             cursor: pointer;
             font-size: 12px;
             float: right;
-            margin-top: 10px;
+            margin-top: 15px;
+            transition: all 0.2s ease;
         }
         .logout-btn:hover {
             color: #fff;
@@ -348,16 +347,16 @@
     </div>
 
     <script>
-        // --- CONFIG: MODIFIKASI PASSWORD KAMU DI SINI ---
-        const TRACKER_PASSWORD = "jayencwokk12958"; 
+        // --- ⚙️ KONFIGURASI PASSWORD (UBAH SESUAI KEINGINAN) ---
+        const TRACKER_PASSWORD = "jayenganteng123"; 
         
-        // Token acak untuk session validasi localStorage
+        // Token internal pelacak otentikasi browser
         const AUTH_TOKEN = "session_authorized_secure_jayen";
 
         let trackerState = {};
         let fetchInterval = null;
 
-        // Cek status login saat halaman pertama kali dimuat
+        // Otomatis cek session login saat halaman dimuat
         window.addEventListener('DOMContentLoaded', () => {
             const savedSession = localStorage.getItem('jayen_auth');
             const sessionSession = sessionStorage.getItem('jayen_auth');
@@ -375,7 +374,6 @@
             if (inputVal === TRACKER_PASSWORD) {
                 errorMsg.style.display = "none";
                 
-                // Simpan status login berdasarkan pilihan "Remember Me"
                 if (isRememberMe) {
                     localStorage.setItem('jayen_auth', AUTH_TOKEN);
                 } else {
@@ -394,7 +392,7 @@
             document.getElementById('dashboardScreen').classList.add('active');
             document.title = "JayenTracker - Dashboard";
             
-            // Jalankan sinkronisasi data setelah berhasil masuk
+            // Panggil API data pertama kali lalu set loop interval
             fetchMultiData();
             fetchInterval = setInterval(fetchMultiData, 1000);
         }
@@ -420,9 +418,23 @@
             return `${Math.floor(diffSeconds / 60)} min ago`;
         }
 
+        // --- 🔐 FETCH DATA AMAN DENGAN HEADER SECURITY AUTHORIZATION ---
         async function fetchMultiData() {
             try {
-                const response = await fetch('/api/update-stone');
+                // Ambil data dengan menyertakan password di header request
+                const response = await fetch('/api/update-stone', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': TRACKER_PASSWORD
+                    }
+                });
+
+                // Jika server merespon 401 (Bypass terdeteksi / Password salah di API), tendang ke Login
+                if (response.status === 401) {
+                    handleLogout();
+                    return;
+                }
+
                 const database = await response.json();
                 const tbody = document.getElementById('accountTableBody');
                 
@@ -443,10 +455,12 @@
                             syncRealDate: now
                         };
                     } else {
+                        // LOGIKA AMAN: Last Modified tidak ter-reset jika angka batu masih sama
                         if (trackerState[userId].lastStoneValue !== currentStoneCount) {
                             trackerState[userId].lastStoneValue = currentStoneCount;
                             trackerState[userId].modifiedRealDate = now;
                         }
+                        // Last Sync ter-reset mengikuti detak pembaruan payload executor
                         if (trackerState[userId].lastRawSyncTime !== currentRawTimestamp) {
                             trackerState[userId].lastRawSyncTime = currentRawTimestamp;
                             trackerState[userId].syncRealDate = now;
@@ -466,7 +480,7 @@
                     `;
                 }
             } catch (err) {
-                console.log("Gagal memuat data API.");
+                console.log("Gagal memuat enkripsi data API.");
             }
         }
     </script>
