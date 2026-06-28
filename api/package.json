@@ -1,9 +1,0 @@
-{
-  "name": "fish-it-tracker-vercel",
-  "version": "1.0.0",
-  "description": "Live web tracking for Fish It Roblox on Vercel",
-  "main": "index.html",
-  "dependencies": {
-    "express": "^4.19.2"
-  }
-}
