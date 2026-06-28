@@ -1,30 +1,29 @@
-// Menggunakan global variable sementara di serverless edge (untuk tes instan)
-let latestData = {
-    username: "Menunggu Data...",
-    totalStone: 0,
-    method: "-",
-    timestamp: "-"
-};
+// Menggunakan Object/Tabel untuk menyimpan data banyak akun sekaligus
+let globalAccountsDatabase = {};
 
 export default function handler(req, res) {
-    // Mengizinkan website diakses dari luar (CORS)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
+    if (req.method === 'OPTIONS') return res.status(200).end();
 
     if (req.method === 'POST') {
-        const { username, totalStone, method, timestamp } = req.body;
-        latestData = { username, totalStone, method, timestamp };
+        const { username, userId, totalStone, method, timestamp } = req.body;
         
-        // Mengirim data balik ke Discord Webhook secara otomatis dari Server Web (Opsional)
-        return res.status(200).json({ success: true, data: latestData });
+        // Simpan data berdasarkan UserId unik masing-masing akun Roblox
+        globalAccountsDatabase[userId] = {
+            username: username,
+            totalStone: totalStone,
+            method: method,
+            timestamp: timestamp
+        };
+        
+        return res.status(200).json({ success: true });
     } 
     
     if (req.method === 'GET') {
-        return res.status(200).json(latestData);
+        // Mengembalikan seluruh daftar akun yang sedang aktif mendata
+        return res.status(200).json(globalAccountsDatabase);
     }
 
     return res.status(405).json({ message: "Method not allowed" });
