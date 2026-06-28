@@ -16,7 +16,7 @@ export default function handler(req, res) {
         const clientPassword = req.headers['authorization'];
         
         // Cek apakah password kosong atau tidak cocok
-        if (!clientPassword || clientPassword !== "jayenganteng123") {
+        if (!clientPassword || clientPassword !== "jayencuokk12958") {
             return res.status(401).json({ error: "Unauthorized access. Password salah atau tidak disertakan!" });
         }
         
