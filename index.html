@@ -4,71 +4,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JayenTracker</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@800;900&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-color: #03060e;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-primary: #3b82f6;
+            --table-bg: #0b0b14;
+            --row-hover: #111124;
+        }
+
         body {
-            background-color: #0f0f1a;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 60px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .dashboard {
-            background: linear-gradient(145deg, #121222, #1a1a32);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 35px rgba(161, 112, 255, 0.2);
-            border: 1px solid #2d2d54;
-            width: 100%;
-            max-width: 850px;
-        }
-
-        /* Container Judul */
-        .title-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-
-        /* Teks JayenTracker dengan Efek Glitch Sesuai Request */
-        .glitch-title {
-            font-size: 32px;
-            font-weight: 900;
-            color: #ffffff;
-            letter-spacing: 1px;
+            box-sizing: border-box;
+            overflow-x: hidden;
             position: relative;
-            text-shadow: 0 0 10px rgba(161, 112, 255, 0.6);
         }
 
-        .glitch-title::before, .glitch-title::after {
-            content: "JayenTracker";
+        /* --- BACKGROUND AURORA (WARISAN NONTONYUK) --- */
+        .bg-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .aurora {
+            position: absolute;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            background-image: 
+                radial-gradient(circle at 15% 25%, rgba(13, 148, 136, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 80% 35%, rgba(37, 99, 235, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 45% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 50%);
+            filter: blur(30px);
+            mix-blend-mode: screen;
+            animation: auroraSlow 25s infinite alternate ease-in-out;
+        }
+
+        @keyframes auroraSlow {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(45deg) scale(1.05); }
+        }
+
+        .content-wrapper {
+            max-width: 850px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* --- 100% GLITCH JAYENTRACKER (PERSIS NONTONYUK) --- */
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin: 0;
+            color: #ffffff;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1::before, h1::after {
+            content: attr(data-text);
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: var(--bg-color);
         }
 
-        .glitch-title::before {
-            color: #df80ff;
-            animation: glitch-anim 3s infinite linear alternate-reverse;
+        h1::before {
+            left: 1px;
+            text-shadow: -1px 0 rgba(255, 0, 193, 0.5);
             clip: rect(44px, 450px, 56px, 0);
-            left: 2px;
+            animation: glitch-anim 6s infinite linear alternate-reverse;
         }
 
-        .glitch-title::after {
-            color: #00ffcc;
-            animation: glitch-anim2 2.5s infinite linear alternate-reverse;
-            clip: rect(12px, 450px, 32px, 0);
-            left: -2px;
+        h1::after {
+            left: -1px;
+            text-shadow: -1px 0 rgba(0, 255, 249, 0.5);
+            clip: rect(85px, 450px, 140px, 0);
+            animation: glitch-anim2 6s infinite linear alternate-reverse;
         }
 
-        /* Keyframes Glitch 100% Persis Request */
         @keyframes glitch-anim {
             0% { clip: rect(15px, 9999px, 66px, 0); }
             10% { clip: rect(34px, 9999px, 55px, 0); }
@@ -83,43 +127,49 @@
             100% { clip: rect(0px, 0px, 0px, 0); }
         }
 
-        /* Styling Tabel */
+        /* --- STYLING TABLE --- */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            background-color: #0b0b14;
+            background-color: var(--table-bg);
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #232342;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         th, td {
-            padding: 14px 18px;
+            padding: 16px 20px;
             text-align: left;
-            border-bottom: 1px solid #1a1a30;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         th {
-            background-color: #15152b;
+            background-color: #121224;
             color: #a170ff;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 14px;
-            letter-spacing: 0.5px;
         }
 
-        tr:hover { background-color: #111124; }
+        tr:hover {
+            background-color: var(--row-hover);
+        }
 
-        /* Posisi Logo Evolved Enchant Stone Baru (Di Samping Teks TH) */
-        .evo-header-logo {
-            width: 20px;
-            height: 20px;
+        /* Perbaikan Posisi Logo EVO pas di sisi kiri teks */
+        .header-align {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             vertical-align: middle;
-            margin-right: 6px;
-            filter: drop-shadow(0 0 4px rgba(223, 128, 255, 0.7));
         }
 
-        /* Badge Angka Ungu */
+        .evo-header-logo {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        /* Badge Angka Ungu Menyala */
         .stone-badge {
             background-color: #2a1640;
             color: #df80ff;
@@ -147,18 +197,26 @@
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="title-container">
-            <div class="glitch-title">JayenTracker</div>
-        </div>
+
+    <div class="bg-wrapper">
+        <div class="aurora"></div>
+    </div>
+
+    <div class="content-wrapper">
+        <header>
+            <!-- Sinkronisasi Element Glitch Persis Atribut NontonYuk -->
+            <h1 data-text="JayenTracker">JayenTracker</h1>
+        </header>
         
         <table>
             <thead>
                 <tr>
                     <th>👤 Player Name</th>
                     <th>
-                        <img class="evo-header-logo" src="https://raw.githubusercontent.com/jayenco/tracker/main/EVO.png" alt="Evolved Stone">
-                        Evolved Enchant Stone
+                        <div class="header-align">
+                            <img class="evo-header-logo" src="https://raw.githubusercontent.com/jayenco/tracker/main/EVO.png" alt="Evolved Stone">
+                            <span>Evolved Enchant Stone</span>
+                        </div>
                     </th>
                     <th>🕒 Last Modified</th>
                     <th>🔄 Last Sync</th>
@@ -166,14 +224,13 @@
             </thead>
             <tbody id="accountTableBody">
                 <tr>
-                    <td colspan="4" style="text-align: center; color: #5c5c7a; padding: 25px;">Menunggu sinkronisasi dari executor Roblox...</td>
+                    <td colspan="4" style="text-align: center; color: #5c5c7a; padding: 25px;">Menunggu data executor...</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <script>
-        // State internal browser untuk mencatat riwayat perubahan data secara independen
         let trackerState = {};
 
         function formatElapsedTime(pastTime) {
@@ -204,7 +261,6 @@
                     const currentRawTimestamp = account.timestamp;
                     const now = new Date();
 
-                    // Jika akun baru pertama kali terdeteksi di browser
                     if (!trackerState[userId]) {
                         trackerState[userId] = {
                             lastStoneValue: currentStoneCount,
@@ -213,20 +269,19 @@
                             syncRealDate: now
                         };
                     } else {
-                        // 1. LOGIKA LAST MODIFIED: Hanya update waktu jika angka batu bertambah / berkurang
+                        // AKURAT: Last Modified HANYA berubah jika nilai batu bertambah/berkurang
                         if (trackerState[userId].lastStoneValue !== currentStoneCount) {
                             trackerState[userId].lastStoneValue = currentStoneCount;
                             trackerState[userId].modifiedRealDate = now;
                         }
                         
-                        // 2. LOGIKA LAST SYNC: Update waktu setiap kali data baru dari executor masuk (timestamp berubah)
+                        // Last Sync berubah setiap ada payload data baru dari server/executor
                         if (trackerState[userId].lastRawSyncTime !== currentRawTimestamp) {
                             trackerState[userId].lastRawSyncTime = currentRawTimestamp;
                             trackerState[userId].syncRealDate = now;
                         }
                     }
 
-                    // Hitung teks elapsennya dinamis (e.g., "5 sec ago")
                     const displayModified = formatElapsedTime(trackerState[userId].modifiedRealDate);
                     const displaySync = formatElapsedTime(trackerState[userId].syncRealDate);
 
@@ -246,11 +301,10 @@
                     tbody.innerHTML += row;
                 }
             } catch (err) {
-                console.log("Gagal memuat data dari API Vercel.");
+                console.log("Gagal memuat data API.");
             }
         }
 
-        // Jalankan tracking real-time per 1 detik agar counter waktu berjalan mulus
         setInterval(fetchMultiData, 1000);
         fetchMultiData();
     </script>
